@@ -1,3 +1,4 @@
+import {useState} from  'react'
 import { useTranslation } from 'react-i18next'
 import type { Theme } from './theme'
 
@@ -12,6 +13,7 @@ interface Props {
   onShapefileUpload:(file: File) => void
   mouseCoords:      { lat: number; lng: number } | null
   rasterValue?:     number | null
+  onCoordinateSearch:(lng: number,lat:number) => void
 }
 
 // ── Flat SVG icons ─────────────────────────────────────────────────────────
@@ -69,10 +71,35 @@ const DRAW_TOOLS: { mode: DrawMode; icon: React.ReactNode; titleKey: string }[] 
 // ── Component ───────────────────────────────────────────────────────────────
 
 export default function MapToolbar({
-  drawMode, theme, onDrawModeChange, onClearAoi, onShapefileUpload, mouseCoords, rasterValue,
+  drawMode, theme, onDrawModeChange, onClearAoi, onShapefileUpload, mouseCoords, rasterValue,onCoordinateSearch
 }: Props) {
   const t = theme
   const { t: tr } = useTranslation()
+
+    const t = theme
+  const { t: tr } = useTranslation()
+
+  //
+  const [longitude, setLongitude] = useState('')
+  const [latitude, setLatitude] = useState('')
+
+  const lng = Number(longitude)
+  const lat = Number(latitude)
+
+  const coordinateValid =
+    longitude.trim() !== '' &&
+    latitude.trim() !== '' &&
+    Number.isFinite(lng) &&
+    Number.isFinite(lat) &&
+    lng >= -180 &&
+    lng <= 180 &&
+    lat >= -90 &&
+    lat <= 90
+
+  function handleCoordinateSearch() {
+    if (!coordinateValid) return
+    onCoordinateSearch(lng, lat)
+  }
 
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0]
@@ -99,6 +126,63 @@ export default function MapToolbar({
           <input type="file" accept=".zip,.shp,.gpkg" style={{ display: 'none' }} onChange={handleFile} />
         </label>
         <ToolBtn icon={<IconDelete />} title={tr('mapToolbar.clearAoi')} active={false} t={t} onClick={onClearAoi} />
+        <span style={{width: 1, height: 20, background: t.border, margin: '0 5px',}}/>
+        <input type="number" value={longitude} min={-180} max={180} step="any" placeholder={tr('mapToolbar.longitude')}
+         onChange={(e) => setLongitude(e.target.value)}
+         style={{width: 92, height: 24, boxSizing: 'border-box', padding: '0 6px', borderRadius: 3,
+      border: `1px solid ${t.border}`,
+      background: t.bg,
+      color: t.text,
+      fontSize: 11,
+      outline: 'none',
+    }}
+  />
+
+  {/* 纬度 */}
+  <input
+    type="number"
+    value={latitude}
+    min={-90}
+    max={90}
+    step="any"
+    placeholder={tr('mapToolbar.latitude')}
+    onChange={(e) => setLatitude(e.target.value)}
+    style={{
+      width: 92,
+      height: 24,
+      boxSizing: 'border-box',
+      padding: '0 6px',
+      borderRadius: 3,
+      border: `1px solid ${t.border}`,
+      background: t.bg,
+      color: t.text,
+      fontSize: 11,
+      outline: 'none',
+    }}
+  />
+
+  {/* 坐标搜索 */}
+  <button
+    onClick={handleCoordinateSearch}
+    disabled={!coordinateValid}
+    title={tr('mapToolbar.coordinateSearch')}
+    style={{
+      height: 24,
+      padding: '0 10px',
+      borderRadius: 3,
+      border: `1px solid ${coordinateValid ? t.btnActiveBorder : t.border}`,
+      background: coordinateValid ? t.btnActiveBg : 'transparent',
+      color: coordinateValid ? t.btnActiveFg : t.textMuted,
+      cursor: coordinateValid ? 'pointer' : 'not-allowed',
+      fontSize: 11,
+      whiteSpace: 'nowrap',
+    }}
+  >
+    {tr('mapToolbar.coordinateSearch')}
+  </button>
+
+
+
       </Section>
 
       {/* ── Legend + coords (right-aligned) ── */}
