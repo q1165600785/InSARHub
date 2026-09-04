@@ -115,7 +115,10 @@ export default function MapToolbar({
       height: 36,
     }}>
 
-      <Section label={tr('mapToolbar.areaOfInterest')} t={t}>
+      <Section label={tr(
+
+
+          'mapToolbar.areaOfInterest')} t={t}>
         {DRAW_TOOLS.map(({ mode, icon, titleKey }) => (
           <ToolBtn key={mode!} icon={icon} title={tr(titleKey)}
             active={drawMode === mode} t={t}
