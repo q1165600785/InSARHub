@@ -75,13 +75,9 @@ export default function MapToolbar({
 }: Props) {
   const t = theme
   const { t: tr } = useTranslation()
-
-    const t = theme
-  const { t: tr } = useTranslation()
-
   //
-  const [longitude, setLongitude] = useState('')
-  const [latitude, setLatitude] = useState('')
+  const [longitude, setLongitude] = useState('116.27')
+  const [latitude, setLatitude] = useState('37.46')
 
   const lng = Number(longitude)
   const lat = Number(latitude)
@@ -115,10 +111,7 @@ export default function MapToolbar({
       height: 36,
     }}>
 
-      <Section label={tr(
-
-
-          'mapToolbar.areaOfInterest')} t={t}>
+      <Section label={tr('mapToolbar.areaOfInterest')} t={t}>
         {DRAW_TOOLS.map(({ mode, icon, titleKey }) => (
           <ToolBtn key={mode!} icon={icon} title={tr(titleKey)}
             active={drawMode === mode} t={t}
@@ -130,62 +123,22 @@ export default function MapToolbar({
         </label>
         <ToolBtn icon={<IconDelete />} title={tr('mapToolbar.clearAoi')} active={false} t={t} onClick={onClearAoi} />
         <span style={{width: 1, height: 20, background: t.border, margin: '0 5px',}}/>
-        <input type="number" value={longitude} min={-180} max={180} step="any" placeholder={tr('mapToolbar.longitude')}
-         onChange={(e) => setLongitude(e.target.value)}
-         style={{width: 92, height: 24, boxSizing: 'border-box', padding: '0 6px', borderRadius: 3,
-      border: `1px solid ${t.border}`,
-      background: t.bg,
-      color: t.text,
-      fontSize: 11,
-      outline: 'none',
-    }}
-  />
+            <input type="number" value={longitude} min={-180} max={180} step="any" placeholder={tr('mapToolbar.longitude')}
+                   onChange={(e) => setLongitude(e.target.value)}
+                   style={{width: 92, height: 24, boxSizing: 'border-box', padding: '0 6px', borderRadius: 3,
+                       border: `1px solid ${t.border}`, background: t.bg, color: t.text, fontSize: 11, outline: 'none',}}/>
 
-  {/* 纬度 */}
-  <input
-    type="number"
-    value={latitude}
-    min={-90}
-    max={90}
-    step="any"
-    placeholder={tr('mapToolbar.latitude')}
-    onChange={(e) => setLatitude(e.target.value)}
-    style={{
-      width: 92,
-      height: 24,
-      boxSizing: 'border-box',
-      padding: '0 6px',
-      borderRadius: 3,
-      border: `1px solid ${t.border}`,
-      background: t.bg,
-      color: t.text,
-      fontSize: 11,
-      outline: 'none',
-    }}
-  />
+            <input type="number" value={latitude} min={-90} max={90} step="any" placeholder={tr('mapToolbar.latitude')}
+                   onChange={(e) => setLatitude(e.target.value)}
+                   style={{width: 92, height: 24, boxSizing: 'border-box', padding: '0 6px', borderRadius: 3,
+                       border: `1px solid ${t.border}`, background: t.bg, color: t.text, fontSize: 11, outline: 'none',}}/>
 
-  {/* 坐标搜索 */}
-  <button
-    onClick={handleCoordinateSearch}
-    disabled={!coordinateValid}
-    title={tr('mapToolbar.coordinateSearch')}
-    style={{
-      height: 24,
-      padding: '0 10px',
-      borderRadius: 3,
-      border: `1px solid ${coordinateValid ? t.btnActiveBorder : t.border}`,
-      background: coordinateValid ? t.btnActiveBg : 'transparent',
-      color: coordinateValid ? t.btnActiveFg : t.textMuted,
-      cursor: coordinateValid ? 'pointer' : 'not-allowed',
-      fontSize: 11,
-      whiteSpace: 'nowrap',
-    }}
-  >
-    {tr('mapToolbar.coordinateSearch')}
-  </button>
-
-
-
+           <button onClick={handleCoordinateSearch} disabled={!coordinateValid} title={tr('mapToolbar.coordinateSearch')}
+                   style={{height: 24, padding: '0 10px', borderRadius: 3, border: `1px solid ${coordinateValid ? t.btnActiveBorder : t.border}`,
+                       background: coordinateValid ? t.btnActiveBg : 'transparent', color: coordinateValid ? t.btnActiveFg : t.textMuted,
+                       cursor: coordinateValid ? 'pointer' : 'not-allowed', fontSize: 11, whiteSpace: 'nowrap',}}>
+               {tr('mapToolbar.coordinateSearch')}
+          </button>
       </Section>
 
       {/* ── Legend + coords (right-aligned) ── */}

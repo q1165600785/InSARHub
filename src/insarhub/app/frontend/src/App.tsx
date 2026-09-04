@@ -340,7 +340,7 @@ export default function App() {
   }
 
   // ── Search ────────────────────────────────────────────────────────────────
-  async function handleSearch() {
+  async function handleSearch(aoiOverrdide?:{wkt:string;bbox:Bbox}) {
     const byName = filters.granuleNames && filters.granuleNames.length > 0
     if (!byName && (!filters.startDate || !filters.endDate)) {
       setResultCount(tr('app.setDatesInFilters'))
@@ -356,13 +356,15 @@ export default function App() {
     setFootprints(null)
     setSelectedFeature(null)
 
-    const wkt = aoiWkt ?? bboxToWkt(aoi)
+    // const wkt = aoiWkt ?? bboxToWkt(aoi)
+    const searchAoi = aoiOverride?.bbox ?? aoi
+    const wkt = aoiOverride?.wkt ?? aoiWkt ?? bboxToWkt(searchAoi)
 
     const res = await fetch(`${API}/api/search`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        west: aoi[0], south: aoi[1], east: aoi[2], north: aoi[3],
+        west: searchAoi[0], south: searchAoi[1], east: searchAoi[2], north: searchAoi[3],
         wkt, start: filters.startDate || null, end: filters.endDate || null,
         maxResults:     filters.maxResults ? parseInt(filters.maxResults) : 2000,
         downloaderType,
@@ -378,6 +380,15 @@ export default function App() {
       setSessionId(data.session_id)
     })
   }
+
+  function handleCoordinateSearch(lng: number, lat: number) {
+  const feature: GeoJSON.Feature = {type: 'Feature', properties: {}, geometry: {type: 'Point', coordinates: [lng, lat],},}
+  const bbox: Bbox = [lng - 0.1, lat - 0.1, lng + 0.1, lat + 0.1,]
+  const wkt = `POINT (${lng} ${lat})`
+
+  handleAoiDrawn(wkt, bbox, feature)
+
+  void handleSearch({wkt, bbox,})}
 
   // ── AOI drawn on map ──────────────────────────────────────────────────────
   function handleAoiDrawn(wkt: string, bbox: Bbox, feature?: GeoJSON.Feature) {
@@ -482,6 +493,7 @@ export default function App() {
         mouseCoords={mouseCoords}
         rasterValue={rasterPixelVal}
         theme={theme}
+        onCoordinateSearch={handleCoordinateSearch}
       />
 
       {/* Map */}

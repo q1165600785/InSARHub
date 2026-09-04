@@ -410,7 +410,10 @@
     "uploadShapefile": "Upload shapefile (.zip)",
     "clearAoi": "Clear AOI",
     "descending": "Descending",
-    "ascending": "Ascending"
+    "ascending": "Ascending",
+    "longitude": "Longitude",
+    "latitude": "Latitude",
+    "coordinateSearch": "Coordinate Search"
   },
   "basemapSwitcher": {
     "satellite": "Satellite",

@@ -401,7 +401,10 @@
     "uploadShapefile": "上传 Shapefile (.zip)",
     "clearAoi": "清除区域",
     "descending": "降轨",
-    "ascending": "升轨"
+    "ascending": "升轨",
+    "longitude": "经度",
+    "latitude": "纬度",
+    "coordinateSearch": "坐标搜索"
   },
   "basemapSwitcher": {
     "satellite": "卫星影像",
